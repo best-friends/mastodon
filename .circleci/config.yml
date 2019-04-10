@@ -251,4 +251,7 @@ workflows:
       - check-i18n:
           requires:
             - install-ruby2.6
-      - docker-build
+      - docker-build:
+          filters:
+            branches:
+              only: best-friends
