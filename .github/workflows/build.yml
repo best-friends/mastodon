@@ -1,0 +1,53 @@
+name: build
+on: [pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:10.6-alpine
+      redis:
+        image: redis:5.0-alpine
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby
+        with:
+          ruby-version: 2.6
+      - name: Prepare Tests
+        run: ./bin/rails parallel:create parallel:load_schema parallel:prepare
+      - name: Run Tests
+        run: ./bin/retry bundle exec parallel_test ./spec/ --group-by filesize --type rspec
+  check-i18n:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby
+        with:
+          ruby-version: 2.6.5
+      - run: bundle install
+      - run: bundle exec i18n-tasks check-normalized
+      - run: bundle exec i18n-tasks unused -l en
+      - run: bundle exec i18n-tasks check-consistent-interpolations
+      - run: bundle exec rake repo:check_locale_files
+  js-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node
+        with:
+          node-version: 12.13.0
+      - run: yarn install
+      - run: ./bin/retry yarn test:jest
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby
+        with:
+          ruby-version: 2.6.5
+      - uses: actions/setup-node
+        with:
+          node-version: 12.13.0
+      - run: bundle install
+      - run: yarn install
+      - run: ./bin/rails assets:precompile
