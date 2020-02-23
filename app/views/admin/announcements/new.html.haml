@@ -1,4 +1,30 @@
 - content_for :page_title do
   = t('.title')
 
-= render 'form', submit: t('.submit')
+= simple_form_for @announcement, url: admin_announcements_path do |f|
+  = render 'shared/error_messages', object: @announcement
+
+  .fields-group
+    = f.input :starts_at, include_blank: true, wrapper: :with_block_label
+    = f.input :ends_at, include_blank: true, wrapper: :with_block_label
+
+  .fields-group
+    = f.input :all_day, as: :boolean, wrapper: :with_label
+
+  .fields-group
+    = f.input :text, wrapper: :with_block_label
+    = f.input :order, wrapper: :with_label, as: :integer, hint: t('admin.announcements.order_hint'), label: t('admin.announcements.order')
+
+  .fields-group
+    = f.input :scheduled_at, include_blank: true, wrapper: :with_block_label
+
+  %h3= t('admin.announcements.links')
+  = f.fields_for :announcement_links do |ff|
+    .fields-group
+      = ff.input :id, as: :hidden
+      = ff.input :text, wrapper: :with_label, as: :string, label: t('admin.announcements.link_text')
+      = ff.input :url, wrapper: :with_label, as: :string, label: t('admin.announcements.link_url')
+    %hr
+
+  .actions
+    = f.button :button, t('.create'), type: :submit

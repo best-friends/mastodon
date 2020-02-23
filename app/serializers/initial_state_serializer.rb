@@ -5,7 +5,6 @@ class InitialStateSerializer < ActiveModel::Serializer
              :media_attachments, :settings
 
   has_one :push_subscription, serializer: REST::WebPushSubscriptionSerializer
-  has_many :announcements, serializer: REST::AnnouncementSerializer
 
   def meta
     store = {
@@ -39,11 +38,13 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:use_pending_items] = object.current_account.user.setting_use_pending_items
       store[:is_staff]          = object.current_account.user.staff?
       store[:trends]            = Setting.trends && object.current_account.user.setting_trends
+      store[:crop_images]       = object.current_account.user.setting_crop_images
     else
       store[:auto_play_gif] = Setting.auto_play_gif
       store[:display_media] = Setting.display_media
       store[:reduce_motion] = Setting.reduce_motion
       store[:use_blurhash]  = Setting.use_blurhash
+      store[:crop_images]   = Setting.crop_images
     end
 
     store
@@ -72,10 +73,6 @@ class InitialStateSerializer < ActiveModel::Serializer
 
   def media_attachments
     { accept_content_types: MediaAttachment.supported_file_extensions + MediaAttachment.supported_mime_types }
-  end
-
-  def announcements
-    Announcement.all
   end
 
   private

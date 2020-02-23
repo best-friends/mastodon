@@ -11,7 +11,7 @@
 #
 
 class AnnouncementLink < ApplicationRecord
-  belongs_to :announcement, inverse_of: :links
+  belongs_to :announcement
 
   validates :text, presence: true
   validates :url, presence: true

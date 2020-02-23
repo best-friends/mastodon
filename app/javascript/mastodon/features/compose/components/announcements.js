@@ -7,6 +7,7 @@ export default class Announcements extends React.PureComponent {
 
   static propTypes = {
     announcements: ImmutablePropTypes.list.isRequired,
+    emojiMap: ImmutablePropTypes.map.isRequired,
     visible: PropTypes.bool.isRequired,
     onToggle: PropTypes.func.isRequired,
   }
@@ -15,7 +16,7 @@ export default class Announcements extends React.PureComponent {
     const { announcements, visible, nicotta, onToggle } = this.props;
     const caretClass = visible ? 'fa fa-caret-down' : 'fa fa-caret-up';
     return (
-      <div className='announcements'>
+      <div className='compose-announcements'>
         <div className='compose__extra__header'>
           <i className='fa fa-bell' />
           お知らせ
@@ -36,9 +37,9 @@ export default class Announcements extends React.PureComponent {
                   />
                 </div>
                 <div className='announcements__body'>
-                  <p>{announcement.get('body')}</p>
+                  <div dangerouslySetInnerHTML={{ __html: announcement.get('contentHtml') }} />
                   <div className='links'>
-                    {announcement.get('links').map((link, i) => (
+                    {announcement.get('announcement_links').map((link, i) => (
                       <a href={link.get('url')} target='_blank' key={i}>
                         {link.get('text')}
                       </a>
