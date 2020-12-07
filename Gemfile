@@ -88,7 +88,7 @@ gem 'simple-navigation', '~> 4.1'
 gem 'simple_form', '~> 4.1'
 gem 'sprockets-rails', '~> 3.2', require: 'sprockets/railtie'
 gem 'stoplight', '~> 2.1.3'
-gem 'strong_migrations', '~> 0.4'
+gem 'strong_migrations', '~> 0.7'
 gem 'tty-command', '~> 0.9', require: false
 gem 'tty-prompt', '~> 0.19', require: false
 gem 'twitter-text', '~> 1.14'
